@@ -1,0 +1,51 @@
+=====================================================================Questions 2.1==================================================================================================
+2.1: Single Row Functions:
+1.Create a query which will display Staff Name, Salary of each staff. Format the salary to be 15 characters long and left padded with ‘$’. 
+2.Display name and date of birth of students where date of birth must be displayed in the format similar to “January, 12 1981” for those who were born on Saturday or Sunday.
+3.Display each Staff name and number of months they worked for the organization. Label the column as ‘Months Worked’. Order your result by number of months employed. Also Round the number of months to closest whole number.
+4.List the details of the staff who have joined in first half of December month (irrespective of the year). 
+5.Write a query that displays Staff Name, Salary, and Grade of all staff. Grade depends on the following table. 
+Salary	Grade
+Salary >=50000	A
+Salary >= 25000 < 50000	B
+Salary>=10000 < 25000	C
+OTHERS	D
+6.Display the Staff Name, Hire date and day of the week on which staff was hired. Label the column as DAY. Order the result by the day of the week starting with Monday.        Hint :Use to_char with hiredate and formats ‘DY’ and ’D’
+7.Write a query to find the position of third occurrence of ‘i’ in the given word ‘Mississippi’. 
+8.Write a query to find the pay date for the month. Pay date is the last Friday of the month. Display the date in the format “Twenty Eighth of January, 2002”. Label the heading as PAY DATE. Hint: use to_char, next_day and last_day functions
+9.Display Student code, Name and Dept Name. Display “Electricals” if dept code = 20, “Electronics” if Dept code =30 and “Others” for all other Dept codes in the Dept Name column. Hint : Use Decode 
+
+=====================================================================Answers 2.1==================================================================================================
+1. SELECT Staff_Name, LPAD(Staff_sal, 15, '$') from Staff_Master;
+
+2. select Student_Name, To_Char(Student_dob, 'Month, DD YYYY') from Student_Master where To_Char(Student_dob,'day') like ('%saturday%') or To_Char(Student_dob,'day') like ('%sunday%');
+
+3. select Staff_Name, Round(Months_between(SYSDATE,Hiredate),0) Months_Worked from Staff_Master Order by Hiredate; 
+
+4. select * from Staff_Master where To_Char(Hiredate,'month') Like ('%december%') and To_Number(To_Char(Hiredate,'dd'))<=15;
+
+5.
+
+6. select Staff_Name,Hiredate, To_char(Hiredate,'day') Day  from Staff_Master order by Day asc;
+
+7. select instr('Mississippi','i',1,3) from dual;
+/*Parameter 
+string
+substring
+starting index
+nth occurence*/
+
+8. SELECT TO_CHAR(NEXT_DAY(LAST_DAY(SYSDATE)-7,'FRIDAY'),'DDSPTH  "OF" MONTH ,YYYY') AS DAY FROM DUAL;
+
+======================================================================Questions 2.2==================================================================================================
+2.2: Group Functions:
+1.Display the Highest, Lowest, Total & Average salary of all staff. Label the columns Maximum, Minimum, Total and Average respectively for each Department code. Also round the result to the nearest whole number.
+2.Display Department code and number of managers working in that department. Label the column as ‘Total Number of Managers’ for each department.
+3.Get the Department number, and sum of Salary of all non-managers where the sum is greater than 20000. 
+
+=====================================================================Answers 2.2==================================================================================================
+1. select Round(Max(Staff_sal),0) Maximum ,Round(Min(Staff_sal),0) Minimum , Round(Sum(Staff_sal),0) Total, Round(Avg(Staff_sal),0) Average from Staff_Master group by Dept_code;
+
+2. select dept_code Department_Code  , Count(mgr_code) Total_No_Of_Managers  from Staff_Master group by Dept_code;
+
+3.select deptno,sum(sal) from emp where job not in('Manager') group by deptno having sum(sal)>50000;
